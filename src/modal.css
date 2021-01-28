@@ -1,0 +1,172 @@
+textarea {
+    width: 100%;
+    margin-top: 18px;
+    margin-bottom: 10px;
+}
+
+button {
+    margin-bottom: 32px;
+    width: 120px;
+    font-size: 16px;
+    padding: 6px 30px;
+}
+
+select {
+    margin-top: 18px;
+    margin-bottom: 24px;
+    width: 100%;
+    font-size: 16px;
+}
+
+b {
+    color: red !important;
+    margin-right: 4px;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, .45);
+}
+
+.modal-content {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 10000;
+    overflow: auto;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.modal-content::after {
+    vertical-align: middle;
+    display: inline-block;
+    height: 100%;
+    margin-left: 12px;
+    content: '';
+}
+
+.modal-dialog {
+    position: relative;
+    outline: 0;
+    width: auto;
+    display: inline-block;
+    vertical-align: middle;
+    box-sizing: border-box;
+    max-width: auto;
+    cursor: default;
+    border-radius: 4px;
+    height: auto;
+    width:600px;
+    background-color: white;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+}
+
+.fa-times {
+    align-self: flex-end;
+    padding: 12px;
+    cursor: pointer;
+}
+
+.header h2 {
+    align-self: flex-start;
+    margin-left: 40px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.required-label {
+    text-align: left;
+    margin-left: 40px;
+    margin-top: 12px;
+    font-style: italic;
+    color: gray;
+    font-size: 14px;
+}
+
+.content {
+    vertical-align: top;
+}
+
+.feedback-item{
+    margin: 8px 4px;
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px 40px;
+}
+
+.feedback-item.email input{
+    margin-top: 12px;
+    margin-bottom: 32px;
+    width: 100%;
+    font-size: 16px;
+}
+
+.feedback-rate-container{
+    display: flex;
+    margin-top:8px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.rate-buttom {
+    height: 30px;
+    width: 30px;
+    background: #c9d9e8;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: gray;
+    cursor: pointer;
+}
+
+.rate-buttom:hover {
+    background: #bcbcbd;
+}
+
+.rate-buttom.active {
+    background: white;
+    border: 1px solid #c9d9e8;
+}
+
+.rating-label{
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-top:12px;
+    width: 100%;
+}
+
+.textarea-counter{
+    width: 100%;
+    text-align: right;
+    font-size: 12px;
+}
+
+.radio-option-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.option-item {
+    margin: 8px 0px;
+}
+
+
