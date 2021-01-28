@@ -88,6 +88,171 @@ const forms = {
   },
 }
 
+function App() {
+  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false)
+  const [feedbackStage, setFeedbackStage] = useState(1)
+  const [feedbackForm, setFeedbackForm] = useState('Our Website')
+  const [currentStep, setCurrentStep] = useState(0)
+  const [feedback, setFeedback] = useState({ rate: null })
+
+  const resetState = () => {
+    setFeedbackStage(1)
+    setFeedbackForm('Our Website')
+    setCurrentStep(0)
+    setFeedback({ rate: null })
+  }
+
+  const onClose = () => {
+    resetState()
+    setFeedbackModalVisible(false)
+  }
+  const onOpen = () => setFeedbackModalVisible(true)
+
+  const onInputChange = e => {
+    let key = e.currentTarget.getAttribute('data-key')
+    if(key === 'category') {
+      setFeedbackForm(e.target.value)
+    }
+    let feedbackObj = {...feedback}
+    feedbackObj[key] = e.target.value
+    setFeedback(feedbackObj)
+  }
+
+  const onNextClick = () => {
+    if(feedbackStage === 1) {
+      setFeedbackStage(2)
+      setCurrentStep(0)
+    } else {
+      setCurrentStep(currentStep + 1)
+    }
+  }
+  const onPreviousClick = () => resetState()
+
+  return (
+    <div className="App">
+      <div className='feedback-tab' onClick={onOpen}>
+        Feedback
+      </div>
+      <Modal
+        title={'COLE HAAN'}
+        visible={feedbackModalVisible}
+        onClose={onClose}
+        >
+          <div className='required-label'>
+            <b>*</b>Required fields
+          </div>
+          {
+            feedbackStage === 1 && (
+            <div className='content'>
+              <div className='feedback-item'>
+                <div className='label'>How likely are you to recommend Cole Haan to a friend or colleague? <b>*</b></div>
+                <div className='feedback-rate-container'>
+                  {
+                    [1,2,3,4,5,6,7,8,9,10].map((item, idx) => (
+                      <div 
+                        key={idx} 
+                        className={`rate-buttom ${ feedback['rate'] && feedback['rate'] === item ? 'active' : ''}`} 
+                        onClick={() => setFeedback({ ...feedback, rate: item })}
+                      >
+                        <span>{item}</span>
+                      </div>
+                    ))
+                  }
+                </div>
+                <div className='rating-label'>
+                  <div>Not at all likely</div>
+                  <div>Extremely likely</div>
+                </div>
+              </div>
+              <div className='feedback-item'>
+                <div className='label'>Please choose a category you would like to leave feedback about.</div>
+                <select 
+                  onChange={onInputChange} 
+                  data-key='category'
+                  className='category-select'
+                  value={feedback['category'] ? feedback['category'] : ''}
+                >
+                  <option value={1}>Choose..</option>
+                  {category.map((item, idx) => <option value={item} key={idx}>{item}</option>)}
+                </select>
+              </div>
+            </div>
+            )
+          }
+          {
+            feedbackStage === 2 && currentStep < forms[feedbackForm].items.length && (
+              <div>
+                {
+                  feedbackForm === 'Our Website' && 
+                  <div>
+                    {[forms[feedbackForm].items[currentStep]].map((componet, index) => {
+                      return renderForm(componet, onInputChange, feedback)
+                    })}
+                  </div>
+                }
+                {
+                  feedbackForm === 'Our Product' && (
+                    <div>
+                      {[forms[feedbackForm].items[currentStep]].map((componet, index) => {
+                        return renderForm(componet, onInputChange, feedback)
+                      })}
+                    </div>
+                  )
+                }
+                {
+                  feedbackForm === 'Our Retail Locations' && (
+                  <div>
+                    {[forms[feedbackForm].items[currentStep]].map((componet, index) => {
+                      return renderForm(componet, onInputChange, feedback)
+                    })}
+                  </div>
+                  )
+                }
+                {
+                  feedbackForm === 'Customer Service' && (
+                  <div>
+                    {[forms[feedbackForm].items[currentStep]].map((componet, index) => {
+                      return renderForm(componet, onInputChange, feedback)
+                    })}
+                  </div>
+                  )
+                }
+                {
+                  feedbackForm === 'Cole Haan, Generally' && (
+                  <div>
+                    {[forms[feedbackForm].items[currentStep]].map((componet, index) => {
+                      return renderForm(componet, onInputChange, feedback)
+                    })}
+                  </div>
+                  )
+                }
+              </div>
+            )
+          }
+          {
+            feedbackStage === 2 && currentStep === forms[feedbackForm].items.length && (
+              <div className='feedback-item email'>
+                <div className='label'>Email (optional, will only be used for customer service purpose)</div>
+                <input placeholder='Email' onChange={onInputChange} data-key='email'/>
+              </div>
+            )
+          }
+          {
+            feedbackStage === 3 && <div>{JSON.stringify(feedback)}</div>
+          }
+          { feedbackStage === 2 && <button onClick={onPreviousClick}>Previous</button>}
+          {
+            feedbackStage !== 3 && currentStep < forms[feedbackForm].items.length ? (
+              <button onClick={onNextClick} disabled={feedbackForm === ''}>Next</button>) 
+              : (
+                feedbackStage !== 3 && currentStep === forms[feedbackForm].items.length ?
+              <button onClick={() => setFeedbackStage(3)}>Submit</button> : null)
+          }
+      </Modal>
+    </div>
+  )
+}
+
 function renderDropdown({ desc, key, options }, onInputChange, feedback) {
   return (
     <div className='feedback-item'>
@@ -158,162 +323,6 @@ function renderForm(component, onInputChange, feedback) {
   else {
     return renderTextarea(component, onInputChange, feedback)
   }
-}
-
-function App() {
-  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false)
-  const [feedbackStage, setFeedbackStage] = useState(1)
-  const [feedbackForm, setFeedbackForm] = useState('')
-  const [feedback, setFeedback] = useState({ rate: null })
-
-  const resetState = () => {
-    setFeedbackStage(1)
-    setFeedbackForm('')
-    setFeedback({ rate: null })
-  }
-
-  const onClose = () => {
-    resetState()
-    setFeedbackModalVisible(false)
-  }
-  const onOpen = () => setFeedbackModalVisible(true)
-
-  const onInputChange = e => {
-    let key = e.currentTarget.getAttribute('data-key')
-    if(key === 'category') {
-      setFeedbackForm(e.target.value)
-    }
-    let feedbackObj = {...feedback}
-    feedbackObj[key] = e.target.value
-    setFeedback(feedbackObj)
-  }
-
-  const onNextClick = () => setFeedbackStage(2)
-  const onPreviousClick = () => resetState()
-
-  return (
-    <div className="App">
-      <div className='feedback-tab' onClick={onOpen}>
-        Feedback
-      </div>
-      <Modal
-        title={'COLE HAAN'}
-        visible={feedbackModalVisible}
-        onClose={onClose}
-        >
-          <div className='required-label'>
-            <b>*</b>Required fields
-          </div>
-          {
-            feedbackStage === 1 && (
-            <div className='content'>
-              <div className='feedback-item'>
-                <div className='label'>How likely are you to recommend Cole Haan to a friend or colleague? <b>*</b></div>
-                <div className='feedback-rate-container'>
-                  {
-                    [1,2,3,4,5,6,7,8,9,10].map((item, idx) => (
-                      <div 
-                        key={idx} 
-                        className={`rate-buttom ${ feedback['rate'] && feedback['rate'] === item ? 'active' : ''}`} 
-                        onClick={() => setFeedback({ ...feedback, rate: item })}
-                      >
-                        <span>{item}</span>
-                      </div>
-                    ))
-                  }
-                </div>
-                <div className='rating-label'>
-                  <div>Not at all likely</div>
-                  <div>Extremely likely</div>
-                </div>
-              </div>
-              <div className='feedback-item'>
-                <div className='label'>Please choose a category you would like to leave feedback about.</div>
-                <select 
-                  onChange={onInputChange} 
-                  data-key='category'
-                  className='category-select'
-                  value={feedback['category'] ? feedback['category'] : ''}
-                >
-                  <option value={1}>Choose..</option>
-                  {category.map((item, idx) => <option value={item} key={idx}>{item}</option>)}
-                </select>
-              </div>
-            </div>
-            )
-          }
-          {
-            feedbackStage === 2 && (
-              <div>
-                {
-                  feedbackForm === 'Our Website' && 
-                  <div>
-                    {forms[feedbackForm].items.map((componet, index) => {
-                      return renderForm(componet, onInputChange, feedback)
-                    })}
-                  </div>
-                }
-                {
-                  feedbackForm === 'Our Product' && (
-                    <div>
-                      {forms[feedbackForm].items.map((componet, index) => {
-                        return renderForm(componet, onInputChange, feedback)
-                      })}
-                    </div>
-                  )
-                }
-                {
-                  feedbackForm === 'Our Retail Locations' && (
-                  <div>
-                    {forms[feedbackForm].items.map((componet, index) => {
-                      return renderForm(componet, onInputChange, feedback)
-                    })}
-                  </div>
-                  )
-                }
-                {
-                  feedbackForm === 'Customer Service' && (
-                  <div>
-                    {forms[feedbackForm].items.map((componet, index) => {
-                      return renderForm(componet, onInputChange, feedback)
-                    })}
-                  </div>
-                  )
-                }
-                {
-                  feedbackForm === 'Cole Haan, Generally' && (
-                  <div>
-                    {forms[feedbackForm].items.map((componet, index) => {
-                      return renderForm(componet, onInputChange, feedback)
-                    })}
-                  </div>
-                  )
-                }
-              </div>
-            )
-          }
-          {
-            feedbackStage === 2 && (
-              <div className='feedback-item email'>
-                <div className='label'>Email (optional, will only be used for customer service purpose)</div>
-                <input placeholder='Email' onChange={onInputChange} data-key='email'/>
-              </div>
-            )
-          }
-          {
-            feedbackStage === 3 && <div>{JSON.stringify(feedback)}</div>
-          }
-          { feedbackStage === 2 && <button onClick={onPreviousClick}>Previous</button>}
-          {
-            feedbackStage === 1 ? (
-              <button onClick={onNextClick} disabled={feedbackForm === ''}>Next</button>) 
-              : (
-                feedbackStage === 2 ?
-              <button onClick={() => setFeedbackStage(3)}>Submit</button> : null)
-          }
-      </Modal>
-    </div>
-  )
 }
 
 export default App;
