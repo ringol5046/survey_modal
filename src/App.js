@@ -92,13 +92,15 @@ function App() {
   const [feedbackModalVisible, setFeedbackModalVisible] = useState(false)
   const [feedbackStage, setFeedbackStage] = useState(1)
   const [feedbackForm, setFeedbackForm] = useState('Our Website')
-  const [currentStep, setCurrentStep] = useState(0)
+  const [categoryStep, setCategoryStep] = useState(0)
+  const [requiredStep, setRequiredStep] = useState(0)
   const [feedback, setFeedback] = useState({ rate: null })
 
   const resetState = () => {
     setFeedbackStage(1)
     setFeedbackForm('Our Website')
-    setCurrentStep(0)
+    setCategoryStep(0)
+    setRequiredStep(0)
     setFeedback({ rate: null })
   }
 
@@ -121,12 +123,21 @@ function App() {
   const onNextClick = () => {
     if(feedbackStage === 1) {
       setFeedbackStage(2)
-      setCurrentStep(0)
+      setCategoryStep(0)
+      setRequiredStep(0)
     } else {
-      setCurrentStep(currentStep + 1)
+      setCategoryStep(categoryStep + 1)
     }
   }
-  const onPreviousClick = () => resetState()
+  const onPreviousClick = () => {
+    if(categoryStep === 0) {
+      setFeedbackStage(1)
+      setCategoryStep(0)
+      setRequiredStep(1)
+    } else {
+      setCategoryStep(categoryStep - 1)
+    }
+  }
 
   return (
     <div className="App">
@@ -144,48 +155,57 @@ function App() {
           {
             feedbackStage === 1 && (
             <div className='content'>
-              <div className='feedback-item'>
-                <div className='label'>How likely are you to recommend Cole Haan to a friend or colleague? <b>*</b></div>
-                <div className='feedback-rate-container'>
-                  {
-                    [1,2,3,4,5,6,7,8,9,10].map((item, idx) => (
-                      <div 
-                        key={idx} 
-                        className={`rate-buttom ${ feedback['rate'] && feedback['rate'] === item ? 'active' : ''}`} 
-                        onClick={() => setFeedback({ ...feedback, rate: item })}
-                      >
-                        <span>{item}</span>
-                      </div>
-                    ))
-                  }
+              {requiredStep === 0 && (
+                <div className='feedback-item'>
+                  <div className='label'>How likely are you to recommend Cole Haan to a friend or colleague? <b>*</b></div>
+                  <div className='feedback-rate-container'>
+                    {
+                      [1,2,3,4,5,6,7,8,9,10].map((item, idx) => (
+                        <div 
+                          key={idx} 
+                          className={`rate-buttom ${ feedback['rate'] && feedback['rate'] === item ? 'active' : ''}`} 
+                          onClick={() => setFeedback({ ...feedback, rate: item })}
+                        >
+                          <span>{item}</span>
+                        </div>
+                      ))
+                    }
+                  </div>
+                  <div className='rating-label'>
+                    <div>Not at all likely</div>
+                    <div>Extremely likely</div>
+                  </div>
+                  <button onClick={() => setRequiredStep(1)} disabled={feedback.rate === null}>Next</button>
                 </div>
-                <div className='rating-label'>
-                  <div>Not at all likely</div>
-                  <div>Extremely likely</div>
-                </div>
-              </div>
-              <div className='feedback-item'>
-                <div className='label'>Please choose a category you would like to leave feedback about.</div>
-                <select 
-                  onChange={onInputChange} 
-                  data-key='category'
-                  className='category-select'
-                  value={feedback['category'] ? feedback['category'] : ''}
-                >
-                  <option value={1}>Choose..</option>
-                  {category.map((item, idx) => <option value={item} key={idx}>{item}</option>)}
-                </select>
-              </div>
+              )}
+              {requiredStep === 1 && (
+                <>
+                  <div className='feedback-item'>
+                    <div className='label'>Please choose a category you would like to leave feedback about.</div>
+                    <select 
+                      onChange={onInputChange} 
+                      data-key='category'
+                      className='category-select'
+                      value={feedback['category'] ? feedback['category'] : ''}
+                    >
+                      <option value={1}>Choose..</option>
+                      {category.map((item, idx) => <option value={item} key={idx}>{item}</option>)}
+                    </select>
+                  </div>
+                  <button onClick={() => setRequiredStep(0)} >Previous</button>
+                  <button onClick={() => onNextClick()} disabled={!feedback.category}>Next</button>
+                </>
+              )}
             </div>
             )
           }
           {
-            feedbackStage === 2 && currentStep < forms[feedbackForm].items.length && (
+            feedbackStage === 2 && categoryStep < forms[feedbackForm].items.length && (
               <div>
                 {
                   feedbackForm === 'Our Website' && 
                   <div>
-                    {[forms[feedbackForm].items[currentStep]].map((componet, index) => {
+                    {[forms[feedbackForm].items[categoryStep]].map((componet, index) => {
                       return renderForm(componet, onInputChange, feedback)
                     })}
                   </div>
@@ -193,7 +213,7 @@ function App() {
                 {
                   feedbackForm === 'Our Product' && (
                     <div>
-                      {[forms[feedbackForm].items[currentStep]].map((componet, index) => {
+                      {[forms[feedbackForm].items[categoryStep]].map((componet, index) => {
                         return renderForm(componet, onInputChange, feedback)
                       })}
                     </div>
@@ -202,7 +222,7 @@ function App() {
                 {
                   feedbackForm === 'Our Retail Locations' && (
                   <div>
-                    {[forms[feedbackForm].items[currentStep]].map((componet, index) => {
+                    {[forms[feedbackForm].items[categoryStep]].map((componet, index) => {
                       return renderForm(componet, onInputChange, feedback)
                     })}
                   </div>
@@ -211,7 +231,7 @@ function App() {
                 {
                   feedbackForm === 'Customer Service' && (
                   <div>
-                    {[forms[feedbackForm].items[currentStep]].map((componet, index) => {
+                    {[forms[feedbackForm].items[categoryStep]].map((componet, index) => {
                       return renderForm(componet, onInputChange, feedback)
                     })}
                   </div>
@@ -220,7 +240,7 @@ function App() {
                 {
                   feedbackForm === 'Cole Haan, Generally' && (
                   <div>
-                    {[forms[feedbackForm].items[currentStep]].map((componet, index) => {
+                    {[forms[feedbackForm].items[categoryStep]].map((componet, index) => {
                       return renderForm(componet, onInputChange, feedback)
                     })}
                   </div>
@@ -230,7 +250,7 @@ function App() {
             )
           }
           {
-            feedbackStage === 2 && currentStep === forms[feedbackForm].items.length && (
+            feedbackStage === 2 && categoryStep === forms[feedbackForm].items.length && (
               <div className='feedback-item email'>
                 <div className='label'>Email (optional, will only be used for customer service purpose)</div>
                 <input placeholder='Email' onChange={onInputChange} data-key='email'/>
@@ -242,10 +262,10 @@ function App() {
           }
           { feedbackStage === 2 && <button onClick={onPreviousClick}>Previous</button>}
           {
-            feedbackStage !== 3 && currentStep < forms[feedbackForm].items.length ? (
-              <button onClick={onNextClick} disabled={feedbackForm === ''}>Next</button>) 
+            feedbackStage === 2 && categoryStep < forms[feedbackForm].items.length ? (
+              <button onClick={onNextClick}>Next</button>) 
               : (
-                feedbackStage !== 3 && currentStep === forms[feedbackForm].items.length ?
+                feedbackStage === 2 && categoryStep === forms[feedbackForm].items.length ?
               <button onClick={() => setFeedbackStage(3)}>Submit</button> : null)
           }
       </Modal>

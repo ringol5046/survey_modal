@@ -151,6 +151,7 @@ b {
     font-size: 12px;
     margin-top:12px;
     width: 100%;
+    margin-bottom: 32px;
 }
 
 .textarea-counter{
